@@ -1,5 +1,5 @@
 <p align="center">
-  <img src="claude_animation.gif" alt="AI Job Search Assistant" width="200">
+  <img src="assets/uncle-sam.jpg" alt="Vintage recruitment poster: Uncle Sam pointing at you — I WANT YOU to land your next job" width="280">
 </p>
 
 # AI Job Search

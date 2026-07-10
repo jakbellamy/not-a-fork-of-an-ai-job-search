@@ -14,7 +14,7 @@ Follow these steps **in order**.
 
 - Nothing → rank all jobs with status `new` in `job_scraper/seen_jobs.json`
 - A focus area (e.g. `/rank data science`) → rank only jobs whose title or stored fit-notes match the focus
-- `--all` → re-rank every job that has not been applied to, including previously ranked ones (useful after the profile changes)
+- `--all` → re-rank every job whose `seen_jobs.json` status is not `applied` or `expired`, including previously ranked ones (useful after the profile changes)
 - `--top <N>` → shortlist size (default 5)
 
 ---
@@ -23,7 +23,7 @@ Follow these steps **in order**.
 
 1. Read `job_scraper/seen_jobs.json`. If the file is missing or has no entries, tell the user to run `/scrape` first and stop.
 2. Read `job_search_tracker.csv`. Build the exclusion set: any company+role already in the tracker is out of scope regardless of flags - it has been applied to or consciously tracked.
-3. Select candidates: entries with status `new` (or all non-applied entries with `--all`), minus the exclusion set, filtered by the focus area if one was given.
+3. Select candidates: entries with status `new` (or with `--all`, any status except `applied`/`expired`), minus the exclusion set, filtered by the focus area if one was given.
 4. If no candidates remain, say so ("Nothing new to rank - run /scrape to find fresh postings") and stop.
 5. Read the scoring framework and profile **once**:
    - `.claude/skills/job-application-assistant/04-job-evaluation.md`
@@ -81,6 +81,8 @@ Update `job_scraper/seen_jobs.json` in place - these fields are additive to the 
 - Dead or past-deadline jobs: set `"status": "expired"`
 
 Do not modify `job_search_tracker.csv` - that file records applications, and `/rank` never applies. Re-running `/rank` is idempotent: already-`ranked` jobs are skipped unless `--all` re-scores them.
+
+`applied` is owned by `/apply`, not `/rank`. If an entry is already `applied`, leave it unchanged.
 
 ---
 

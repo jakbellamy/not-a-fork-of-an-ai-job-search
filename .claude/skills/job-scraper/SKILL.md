@@ -116,13 +116,15 @@ For each new job, do a rapid fit check (NOT the full evaluation from `04-job-eva
       "url": "...",
       "first_seen": "YYYY-MM-DD",
       "fit": "high/medium/low",
-      "status": "new/skipped/evaluated/ranked/expired"
+      "status": "new/skipped/evaluated/ranked/applied/expired"
     }
   }
 }
 ```
 
-`/rank` extends this schema additively: ranked entries also carry `rank_score` (0–100 overall score), `rank_verdict` (fit band, e.g. "strong fit"), and `rank_date` (ISO date of ranking). The `status` field is set to `"ranked"`. Do not drop these fields when re-writing entries.
+`/rank` extends this schema additively: ranked entries also carry `rank_score` (0–100 overall score), `rank_verdict` (fit band, e.g. "strong fit"), and `rank_date` (ISO date of ranking). The `status` field is set to `"ranked"`.
+
+`/apply` owns the transition to `"applied"`: when drafting begins, it tries to match the posting URL (or `source_key`) to a `seen_jobs.json` key and flips status to `"applied"` best-effort. Preserve all existing additive fields when updating status.
 
 2. Only present jobs NOT already in the seen list or tracker.
 
@@ -151,11 +153,11 @@ After presenting, ask:
 
 If the user picks a number, invoke the **job-application-assistant** skill workflow (fit evaluation first, then CV + cover letter if approved).
 
-If the run found many new jobs (roughly 8+), also suggest `/rank` - it batch-scores all new postings against the full fit framework and returns a ranked shortlist, which beats eyeballing a long table. (`/rank` sets the `ranked` and `expired` status values in `seen_jobs.json`; treat both as already-seen for dedup purposes.)
+If the run found many new jobs (roughly 8+), also suggest `/rank` - it batch-scores all new postings against the full fit framework and returns a ranked shortlist, which beats eyeballing a long table. (`/rank` sets the `ranked` and `expired` status values; `/apply` sets `applied`; treat all three as already-seen for dedup purposes.)
 
 ### Step 6: Update Tracker (Optional)
 
-If the user decides to apply to any job, add a row to `job_search_tracker.csv`.
+If the user decides to apply to any job, run `/apply` on the chosen posting URL. `/apply` creates or updates the tracker row and synchronizes `seen_jobs.json` to `status: applied` when keys match.
 
 ---
 

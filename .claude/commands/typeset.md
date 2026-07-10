@@ -38,9 +38,9 @@ Fill the template skeleton with the draft's content:
 - **Contact details** come from the draft if present, otherwise from `01-candidate-profile.md` (tell the user which fields were pulled from the profile).
 - **Missing template sections:** if the template expects a section the draft doesn't have (or vice versa), ask rather than invent or drop content.
 - Write the output to the standard locations `/apply`, `/outcome`, and `/interview` already expect:
-  - CV → `cv/main_<company>.tex`
+   - CV → `cv/main_<company>_<role>.tex`
   - Cover letter → `cover_letters/cover_<company>_<role>.tex`
-  - With `--all`, suffix the template name: `cv/main_<company>_<template>.tex`
+   - With `--all`, suffix the template name: `cv/main_<company>_<role>_<template>.tex`
 
 ---
 

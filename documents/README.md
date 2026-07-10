@@ -14,6 +14,8 @@ This folder holds your actual career documents. The `/setup` command reads every
 
 Drop files in, then run `/setup` (or say "go" if setup already offered you this path). Scanned images (`.png`/`.jpg`) and `.docx` aren't parsed — convert to PDF first. Full details on each folder below.
 
+If you use `/journey`, it keeps an orchestration state file at `documents/journey_state.md` so the guide can continue where you left off without re-scanning everything each run.
+
 ---
 
 ## Folder Structure
@@ -111,7 +113,7 @@ Reference letters from former managers, supervisors, or collaborators.
 
 A record of past job applications. Each subfolder is one application.
 
-You can maintain these folders by hand, or let the **`/outcome`** command do it: it records progress updates and final results conversationally, archives the submitted drafts and the posting text, keeps `outcome.md` in the format below, and updates `job_search_tracker.csv` in the same step.
+You can maintain these folders by hand, or use the command flow directly: **`/apply`** now creates the application folder and stores `job_posting.md` at draft time, and **`/outcome`** records progress updates and final results conversationally, archives the submitted drafts, keeps `outcome.md` in the format below, and updates `job_search_tracker.csv`.
 
 **Subfolder naming:** `<company>_<role>` — lowercase, underscores for spaces.
 
@@ -125,7 +127,7 @@ applications/
 
 ### Files within each application folder
 
-**`job_posting.md`** — Paste the full job posting text here. Used by `/setup` to infer which skills and role types you have targeted, and to calibrate `04-job-evaluation.md`.
+**`job_posting.md`** — The full job posting text. Usually written automatically by `/apply` at draft time; for manual applications, paste it yourself (or let `/outcome` backfill it). Used by `/setup` to infer which skills and role types you have targeted, and to calibrate `04-job-evaluation.md`.
 
 **`cover_letter.tex`** — The cover letter you actually submitted. Used to extract writing style patterns and structure for `06-cover-letter-templates.md`.
 
@@ -160,6 +162,27 @@ Any signal about what they valued or didn't?
 `in_progress` marks an application that is still open (used by `/outcome` for interview-stage updates before a resolution). `/setup`'s calibration draws conclusions only from applications with a final status.
 
 Application folders may also contain **`interview_prep_<stage>.md`** files written by `/interview` (one per interview stage, kept as history), plus rendered `.tex`/`.pdf` copies placed by `/typeset`. `/setup` reads only `job_posting.md`, `cover_letter.tex`, `cv_draft.tex`, and `outcome.md` and ignores everything else, including the `drafts/` and `reviews/` subfolders.
+
+---
+
+## Scraper State Linkage
+
+The scraper state file `job_scraper/seen_jobs.json` tracks discovery and triage status per posting key. The `status` values are:
+
+- `new`
+- `skipped`
+- `evaluated`
+- `ranked`
+- `applied`
+- `expired`
+
+Ownership model:
+
+- `/scrape` discovers and stores entries
+- `/rank` sets `ranked` and `expired`
+- `/apply` sets `applied` (best-effort URL/key match)
+
+`job_search_tracker.csv` includes both `source` and `source_key` so commands can join tracker rows to `seen_jobs.json` entries exactly when possible.
 
 **What `/setup` learns from outcome.md:**
 - Which role types and companies have led to interviews (signals strong fit areas)

@@ -138,7 +138,7 @@ This runs the full workflow: evaluate fit, draft CV + cover letter, review with 
 
 ## Other commands
 
-`/setup`, `/scrape`, and `/apply` form the core workflow. Ten more commands extend it once your profile is in place — `/critique`, `/typeset`, `/version`, `/interview`, `/outcome`, `/rank`, `/expand`, `/upskill`, `/add-template`, `/add-portal`, plus `/reset` for starting over. **Full descriptions of each, plus a typical-week walkthrough, live in [docs/user-guide.md](docs/user-guide.md)** rather than duplicated here — that's also where "how `/apply` works" and the tips-for-better-results guidance moved.
+`/setup`, `/scrape`, and `/apply` form the core workflow. `/journey` can orchestrate the whole process with persistent state and explicit handoffs. Additional commands extend it once your profile is in place — `/status`, `/critique`, `/typeset`, `/version`, `/interview`, `/outcome`, `/rank`, `/expand`, `/upskill`, `/add-template`, `/add-portal`, plus `/reset` for starting over. **Full descriptions of each, plus a typical-week walkthrough, live in [docs/user-guide.md](docs/user-guide.md)** rather than duplicated here — that's also where "how `/apply` works" and the tips-for-better-results guidance moved.
 
 ## File structure
 
@@ -148,6 +148,8 @@ ai-job-search/
 ├── .claude/
 │   ├── commands/
 │   │   ├── apply.md                   # /apply workflow (drafter-reviewer)
+│   │   ├── journey.md                 # /journey end-to-end orchestrator with persistent state
+│   │   ├── status.md                  # /status read-only application dashboard
 │   │   ├── setup.md                   # /setup onboarding (documents folder, CV import, or interview)
 │   │   ├── expand.md                  # /expand competency enrichment from documents and online presence
 │   │   ├── add-template.md            # /add-template register custom LaTeX templates
@@ -196,6 +198,7 @@ ai-job-search/
 │   └── applications/                  # Past application records (<company>_<role>/)
 ├── docs/
 │   ├── user-guide.md                   # Full command reference + day-to-day workflow
+│   ├── journey-state-template.md       # Template for documents/journey_state.md used by /journey
 │   └── self-draft-workflow.md         # Plain-English guide: you write, the AI edits/typesets/versions
 ├── .github/workflows/ci.yml           # CI: LaTeX smoke compiles, skill lint, CLI typechecks
 ├── salary_lookup.py                   # Salary benchmarking tool (BYO data)
@@ -294,16 +297,3 @@ To wipe your profile data and start fresh:
 ## Tips for better results
 
 Profile depth is the single biggest lever on output quality, and the framework supports both explicit role targeting and open-ended career-path discovery. See **[docs/user-guide.md → Getting the most out of it](docs/user-guide.md#getting-the-most-out-of-it)** for the details.
-
-## Contributing
-
-Thinking about a PR? Read [CONTRIBUTING.md](CONTRIBUTING.md) first - it explains what gets merged, what lives in forks, and why.
-
-## Acknowledgements
-
-- [Mikkel Krogholm](https://github.com/mikkelkrogsholm) ([skills repo](https://github.com/mikkelkrogsholm/skills)) for the job search CLI skills
-- Built with [Claude Code](https://claude.com/claude-code) by [Anthropic](https://anthropic.com)
-
-## License
-
-MIT

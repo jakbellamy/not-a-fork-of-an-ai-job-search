@@ -262,3 +262,11 @@ Shared Claude Code permissions now live in `.claude/settings.json` (scoped to `b
 ```bash
 rm .claude/settings.local.json
 ```
+
+### `bun` not recognized after installing
+
+On Windows, the installer updates your **permanent** user PATH, but any already-open terminal (and any shell spawned from an already-running parent process, e.g. an IDE's integrated terminal) keeps the PATH it started with. Close and reopen your terminal, or start a fresh one, and `bun` will resolve. If you need it to work immediately without restarting, call it by its full path once: `~/.bun/bin/bun` (macOS/Linux) or `$env:USERPROFILE\.bun\bin\bun.exe` (Windows PowerShell).
+
+## Next steps
+
+Once setup finishes, `/setup` will suggest running `/scrape` and `/apply`. For the full command reference and a typical week's workflow, see **[docs/user-guide.md](docs/user-guide.md)**.

@@ -2,6 +2,18 @@
 
 This folder holds your actual career documents. The `/setup` command reads everything here and uses it to populate the candidate skill files under `.claude/skills/job-application-assistant/`. It is safe to re-run `/setup` as you add new documents — it merges intelligently and will never overwrite existing content without asking you first.
 
+## At a glance
+
+| Put this in... | ...if you have | Formats |
+|---|---|---|
+| `cv/` | Your master CV (the fullest version, not a tailored one) | `.pdf`, `.tex` |
+| `linkedin/` | A LinkedIn PDF export (Profile → More → Save to PDF) | `.pdf` |
+| `diplomas/` | Degree certificates or transcripts | `.pdf` |
+| `references/` | Reference letters | `.pdf`, `.txt`, `.md` |
+| `applications/<company>_<role>/` | Past applications (posting, drafts, outcome) | see below |
+
+Drop files in, then run `/setup` (or say "go" if setup already offered you this path). Scanned images (`.png`/`.jpg`) and `.docx` aren't parsed — convert to PDF first. Full details on each folder below.
+
 ---
 
 ## Folder Structure

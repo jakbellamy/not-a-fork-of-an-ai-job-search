@@ -26,6 +26,13 @@ files ready    with fit ratings     (LaTeX, tailored)
 
 The framework encodes career guidance best practices, including structured evaluation criteria, forward-looking cover letter framing, and optional salary benchmarking.
 
+## Guides
+
+- **[SETUP.md](SETUP.md)** — detailed, step-by-step installation instructions (macOS and Windows), including LaTeX/Bun troubleshooting.
+- **[documents/README.md](documents/README.md)** — which documents to add for `/setup`, and where they go.
+- **[docs/user-guide.md](docs/user-guide.md)** — the full command reference and day-to-day workflow once you're set up.
+- **[docs/self-draft-workflow.md](docs/self-draft-workflow.md)** — write your own CV/cover letter and have Claude edit, format, and archive them instead.
+
 ## Prerequisites
 
 - [Claude Code](https://claude.com/claude-code) (CLI)
@@ -43,11 +50,46 @@ gh repo fork MadsLorentzen/ai-job-search --clone
 cd ai-job-search
 ```
 
-### 2. Install job search tools
+### 2. Install prerequisites and job search tools
 
-PowerShell:
+Pick your platform. Both cover the same four steps: install Bun, install a LaTeX distribution, install `pdftotext` (optional), then install the job-portal CLI dependencies. **[SETUP.md](SETUP.md) has the fully detailed version of this step**, including minimal-TeX-install package lists and smoke tests — this is the condensed version.
+
+<details open>
+<summary><strong>macOS</strong></summary>
+
+```bash
+# Bun
+curl -fsSL https://bun.sh/install | bash
+
+# LaTeX (MacTeX is the full distribution; see SETUP.md for a lighter TinyTeX route)
+brew install --cask mactex
+
+# pdftotext (optional, for the ATS check)
+brew install poppler
+
+# Job-portal CLI dependencies
+for tool in jobbank-search jobdanmark-search jobindex-search jobnet-search linkedin-search freehire-search; do
+  cd .agents/skills/$tool/cli && bun install && cd ../../../..
+done
+```
+
+</details>
+
+<details>
+<summary><strong>Windows</strong></summary>
+
+Run these in PowerShell:
 
 ```powershell
+# Bun
+powershell -ExecutionPolicy Bypass -c "irm https://bun.sh/install.ps1 | iex"
+
+# LaTeX: download and run the installer from https://miktex.org/download
+
+# pdftotext (optional, for the ATS check)
+choco install poppler
+
+# Job-portal CLI dependencies
 $tools = @("jobbank-search", "jobdanmark-search", "jobindex-search", "jobnet-search", "linkedin-search", "freehire-search")
 foreach ($tool in $tools) {
   Set-Location ".agents/skills/$tool/cli"
@@ -56,15 +98,11 @@ foreach ($tool in $tools) {
 }
 ```
 
-Bash / zsh / Git Bash:
+If `bun` isn't recognized right after installing, close and reopen your terminal — the installer updates your permanent PATH, but already-open shells (and any shell spawned from an already-running parent process) keep their old copy until restarted.
 
-```bash
-for tool in jobbank-search jobdanmark-search jobindex-search jobnet-search linkedin-search freehire-search; do
-  cd .agents/skills/$tool/cli && bun install && cd ../../../..
-done
-```
+</details>
 
-For `linkedin-search` and `freehire-search` the install is optional: both have zero runtime dependencies and run with plain `bun`; `bun install` only pulls TypeScript dev types.
+For `linkedin-search` and `freehire-search` the install is optional either way: both have zero runtime dependencies and run with plain `bun`; `bun install` only pulls TypeScript dev types.
 
 ### 3. Set up your profile
 
@@ -74,7 +112,7 @@ claude
 /setup
 ```
 
-`/setup` offers three paths: read your `documents/` folder if you have one populated (CV PDF, LinkedIn export, diplomas, reference letters, past applications), import a single CV pasted in chat, or walk through an interview. It auto-detects what you have and asks. Documents-folder mode is idempotent and safe to re-run as you add more material; see `documents/README.md` for the layout.
+`/setup` offers three paths: read your `documents/` folder if you have one populated (CV PDF, LinkedIn export, diplomas, reference letters, past applications), import a single CV pasted in chat, or walk through an interview. It auto-detects what you have and asks. Documents-folder mode is idempotent and safe to re-run as you add more material; see [documents/README.md](documents/README.md) for exactly what goes where.
 
 ### 4. Search for jobs
 
@@ -100,21 +138,7 @@ This runs the full workflow: evaluate fit, draft CV + cover letter, review with 
 
 ## Other commands
 
-`/setup`, `/scrape`, and `/apply` form the core workflow. Ten more commands extend it once your profile is in place:
-
-- **`/critique`** reviews a CV or cover letter **you wrote yourself** — against the job posting, your actual profile, the writing-style rules, and ATS realities — and returns numbered suggestions with rationale. Nothing is changed unless you accept a suggestion; decisions are recorded per round in the application's `reviews/` folder, and rejected suggestions stay rejected. The editor-not-author counterpart to `/apply`.
-- **`/typeset`** renders your own text draft (Markdown, plain text, or Word) as a professionally typeset PDF using the stock or any registered template — content verbatim, layout and ATS checks included, overflow cuts only with your sign-off. `--all` renders one draft in every registered style for comparison. See [The self-draft workflow](docs/self-draft-workflow.md).
-- **`/version`** is plain-language version control: "save my progress", "start a version for the Acme job", "bring back Tuesday's cover letter". Git underneath, fully agent-operated — no git knowledge needed. First use switches the instance to private mode (personal data becomes tracked; the repo must then stay private).
-
-- **`/interview`** preps you for a scheduled interview on a tracked application. It builds a stage-specific prep pack from the application's archive (the exact posting, the CV and cover letter the interviewer actually read, feedback recorded from earlier rounds), researches the company and interviewers with a verify-before-use rule, maps likely questions to your STAR examples, and offers a mock interview following the roleplay protocol in `07-interview-prep.md`. Gaps get honest bridge answers, never invented experience.
-- **`/outcome`** records what happened to an application - interview stages, offers, rejections, silence. It archives the submitted CV, cover letter, and posting text into `documents/applications/<company>_<role>/`, keeps `outcome.md` in the format `/setup` Path A parses, and updates the tracker. Once a few applications resolve, it points you back to `/setup` to calibrate the fit framework from what actually got interviews.
-- **`/rank`** bridges `/scrape` and `/apply`: it batch-scores all newly scraped postings against the fit framework (parallel agents fetch each posting and score the five evaluation dimensions) and returns a ranked shortlist with honest per-job strengths and gaps. Deal-breakers veto, deadlines get urgency flags, dead postings get marked expired. Pick a number and it hands off to the full `/apply` workflow.
-- **`/expand`** enriches your profile by scanning public sources you've already linked in it (GitHub repos, portfolio site, Kaggle, Google Scholar) and looking up syllabi for named courses and certifications. Discovered competencies are added to your profile with a source tag. Useful right after `/setup` to surface skills that documents alone don't make explicit.
-- **`/upskill`** analyzes the gap between your profile and your tracked job postings (or a single posting via `/upskill <URL>`). Produces a prioritized heatmap of skill gaps and a learning plan with web-searched study resources and time estimates. Useful for career planning between applications.
-- **`/add-template`** registers your own LaTeX CV or cover letter template in place of the stock ones. It captures the template's instructions (compile engine, fonts, style rules, page limit), runs a mandatory test compile, and wires the template into `/apply`. See [LaTeX templates](#latex-templates) below.
-- **`/add-portal`** generates a job-portal search skill for a job board in your market. It investigates the portal (search URL pattern, result structure, access rules), scaffolds the CLI skill from the same structure as the shipped ones, and test-runs a live query before registering. See [Job search tools](#job-search-tools) below.
-
-`/reset` is also available, see [Starting over](#starting-over) below.
+`/setup`, `/scrape`, and `/apply` form the core workflow. Ten more commands extend it once your profile is in place — `/critique`, `/typeset`, `/version`, `/interview`, `/outcome`, `/rank`, `/expand`, `/upskill`, `/add-template`, `/add-portal`, plus `/reset` for starting over. **Full descriptions of each, plus a typical-week walkthrough, live in [docs/user-guide.md](docs/user-guide.md)** rather than duplicated here — that's also where "how `/apply` works" and the tips-for-better-results guidance moved.
 
 ## File structure
 
@@ -171,6 +195,7 @@ ai-job-search/
 │   ├── references/                    # Reference letters
 │   └── applications/                  # Past application records (<company>_<role>/)
 ├── docs/
+│   ├── user-guide.md                   # Full command reference + day-to-day workflow
 │   └── self-draft-workflow.md         # Plain-English guide: you write, the AI edits/typesets/versions
 ├── .github/workflows/ci.yml           # CI: LaTeX smoke compiles, skill lint, CLI typechecks
 ├── salary_lookup.py                   # Salary benchmarking tool (BYO data)
@@ -187,26 +212,7 @@ ai-job-search/
 
 ## How `/apply` works
 
-The `/apply` command runs a **drafter-reviewer workflow** with mandatory PDF compilation:
-
-1. **Parse** the job posting (URL or text)
-2. **Evaluate fit** against your profile (skills, experience, culture, location, career alignment)
-3. **Draft** a tailored CV and cover letter in LaTeX
-4. **Spawn a reviewer agent** that researches the company and critiques the drafts
-5. **Revise** based on the reviewer's feedback
-6. **Compile and inspect** both PDFs: lualatex for the CV, xelatex for the cover letter. Claude reads the rendered pages and iterates on the LaTeX until the CV is exactly 2 pages with no orphaned entry titles, and the cover letter is exactly 1 page with the signature visible and fonts consistent.
-7. **ATS-check the CV**: extract the PDF's text layer (`pdftotext`, optional dependency) and verify it the way an ATS parser sees it — contact details present as literal text, no garbled glyphs, sane reading order — then score the posting's keyword coverage against the extraction. Keywords the profile genuinely supports get added; genuine gaps stay visible, never stuffed.
-8. **Present** the final output with a verification checklist
-
-All claims in the CV and cover letter are verified against your actual profile. The system never fabricates skills or experience.
-
-### What makes this workflow different
-
-- **PDF verification loop.** Most LaTeX-resume templates produce "looks fine in the .tex" output that breaks in the PDF: job titles orphan to the next page, cover letters spill onto page 2, bullet fonts silently fall back to the body font. The `/apply` command compiles and visually inspects every PDF and applies targeted fixes (`\needspace`, `\enlargethispage`, font-matching wrappers for list items) until the layout is clean. This runs automatically on every application.
-- **ATS verification on the PDF text layer.** An ATS reads the PDF's embedded text, not the rendered page — and LaTeX can silently produce PDFs whose text extracts as garbage (icon glyphs where the email should be, interleaved lines from multi-column layouts). `/apply` extracts the compiled CV's text layer with `pdftotext` and verifies contact details, reading order, and the posting's keyword coverage against what a parser actually sees. Honesty rule enforced: a keyword the profile doesn't support is acknowledged as a gap, never stuffed in.
-- **Relevance-weighted CV cutting.** When a CV overflows 2 pages, the workflow does not cut mechanically from the "oldest" section. It scores each candidate line by (a) relevance to the target posting, (b) uniqueness in the document, and (c) whether the cover letter depends on it, and cuts the lowest-total-score line first. An older-role bullet that hits posting keywords survives ahead of a recent-role bullet that does not.
-- **Drafter-reviewer separation.** The drafter writes; a second Claude agent, spawned with a fresh context, researches the company and critiques the drafts. The drafter then revises. This catches missed keywords, weak framing, and generic language that a single pass often leaves in.
-- **Token-efficient reviewer dispatch.** The reviewer agent receives drafts inline rather than re-reading them, and the verification checklist runs once at the end of the workflow rather than being duplicated by both agents. Note: the new compile-and-inspect step in Step 5 spends some of those savings on PDF rendering and layout iteration — the workflow trades some end-to-end token cost for a real reduction in broken PDFs reaching the user.
+`/apply` runs a **drafter-reviewer workflow** with mandatory PDF compilation and an ATS text-layer check — parse the posting, evaluate fit, draft, get critiqued by a second agent, revise, compile and visually inspect both PDFs, verify ATS parseability, then present. The full step-by-step breakdown and what makes it different from a typical LaTeX-resume workflow are in **[docs/user-guide.md → How /apply works](docs/user-guide.md#how-apply-works)**.
 
 ## Customization
 
@@ -287,22 +293,7 @@ To wipe your profile data and start fresh:
 
 ## Tips for better results
 
-### Profile depth matters
-
-The single biggest factor in output quality is how much detail you put into your profile. A thin profile produces generic applications; a detailed one enables genuinely tailored results.
-
-- **Role descriptions:** Don't just list job titles. Describe what you actually did in each position: specific projects, tools used, responsibilities, and measurable achievements. The more material you provide, the more precisely the system can reframe your experience for different roles.
-- **Skills in context:** Instead of listing "Python" or "project management," describe how and where you applied them. "Built ML pipelines for customer churn prediction in Python using scikit-learn" gives the system far more to work with than "Python, machine learning."
-- **All onboarding paths work:** Whether you point `/setup` at your `documents/` folder, paste a single CV, or walk through the interview, the principle is the same: richer input produces sharper output.
-
-### Career path discovery
-
-The framework supports two distinct modes of job searching:
-
-- **Explicit targeting:** You know which roles or sectors you want. The system helps refine and prioritize based on fit.
-- **Latent opportunity discovery:** By analyzing your full history (not just job titles, but the actual work you did), the system can surface career paths you haven't considered. Transferable skills that map to unexpected industries, patterns in what you enjoyed or excelled at, or emerging roles that combine your domain expertise with new technology.
-
-To get the most from this, invest time during `/setup` in describing not just your experience, but what energized you, what drained you, and what you'd want more of. This context directly shapes how the system evaluates fit and which roles it surfaces during `/scrape`.
+Profile depth is the single biggest lever on output quality, and the framework supports both explicit role targeting and open-ended career-path discovery. See **[docs/user-guide.md → Getting the most out of it](docs/user-guide.md#getting-the-most-out-of-it)** for the details.
 
 ## Contributing
 

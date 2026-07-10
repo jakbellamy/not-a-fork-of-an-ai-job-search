@@ -28,6 +28,7 @@ linkedin_Profile.pdf
 # Personal photos and signatures
 *.jpg
 *.jpeg
+!/assets/Uncle-Sam.jpg
 *.png
 !cover_letters/OpenFonts/fonts/**
 

@@ -4,6 +4,20 @@ You are orchestrating a two-agent job application workflow. The job posting is p
 
 Follow these steps **exactly in order**. Do not skip steps.
 
+---
+
+## Mode: `--self-draft` (the candidate writes, the AI reviews)
+
+If `$ARGUMENTS` contains `--self-draft`, **or** `documents/applications/<company>_<role>/drafts/` already contains a draft for this posting, run the workflow with the authorship inverted. The step sequence below still applies, with these overrides:
+
+- **Step 2 (Draft) is replaced by *Load*:** read the candidate's own draft(s) from `documents/applications/<company>_<role>/drafts/` (`cv.md`, `cover_letter.md`). If missing, collect them per `/critique` Step 0 (file, .docx, or pasted text) and save them there. Do not author content. If only one document exists (e.g. a cover letter draft but no CV draft), ask whether to run classic drafting for the missing one or wait for the candidate's draft.
+- **Step 3 (Reviewer) runs unchanged** — same reviewer agent, same prompt, critiquing the candidate's drafts instead of AI drafts.
+- **Step 4 (Revise) becomes propose-and-approve:** do NOT auto-apply the reviewer's edits. Convert Part A + Part B feedback into numbered suggestions, save a review file, and let the candidate accept/reject each — exactly per `/critique` Steps 4–5. Accepted changes land in the Markdown drafts.
+- **Step 5 (Compile) goes through `/typeset` rules:** map the (revised) Markdown drafts into the active template per `/typeset` Steps 2–3 — verbatim content, overflow cuts only with the author's sign-off — then compile, inspect, and ATS-check as specified below.
+- **Step 6 runs unchanged**, plus: suggest `/version save` to checkpoint the finished application.
+
+In classic mode (no flag, no existing draft), everything below runs as written.
+
 **Token-efficiency rules for this workflow:**
 - Never re-Read a file whose contents are already in your context from an earlier step. If you read it in Step 1, it is still available in Step 2.
 - When dispatching the reviewer agent, pass draft content **inline in the agent prompt** rather than asking the agent to Read files you already have in memory.

@@ -119,6 +119,10 @@ applications/
 
 **`cv_draft.tex`** — The CV variant you submitted. Used to extract profile statement styles for `05-cv-templates.md`.
 
+**`drafts/`** *(optional — self-draft workflow)* — Your own editable Markdown drafts (`cv.md`, `cover_letter.md`). These are the source of truth when you write your documents yourself: `/critique` reviews them and applies only the suggestions you accept, and `/typeset` renders them to PDF. See [docs/self-draft-workflow.md](../docs/self-draft-workflow.md).
+
+**`reviews/`** *(optional — written by `/critique`)* — Dated critique rounds (`review_YYYY-MM-DD.md`) recording every suggestion and your accept/reject decision. The paper trail of how a draft evolved.
+
 **`outcome.md`** — Fill this in after the application resolves. Format:
 
 ```markdown
@@ -143,7 +147,7 @@ Any signal about what they valued or didn't?
 
 `in_progress` marks an application that is still open (used by `/outcome` for interview-stage updates before a resolution). `/setup`'s calibration draws conclusions only from applications with a final status.
 
-Application folders may also contain **`interview_prep_<stage>.md`** files written by `/interview` (one per interview stage, kept as history). `/setup` reads only the four files named above and ignores these.
+Application folders may also contain **`interview_prep_<stage>.md`** files written by `/interview` (one per interview stage, kept as history), plus rendered `.tex`/`.pdf` copies placed by `/typeset`. `/setup` reads only `job_posting.md`, `cover_letter.tex`, `cv_draft.tex`, and `outcome.md` and ignores everything else, including the `drafts/` and `reviews/` subfolders.
 
 **What `/setup` learns from outcome.md:**
 - Which role types and companies have led to interviews (signals strong fit areas)

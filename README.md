@@ -117,7 +117,11 @@ This runs the full workflow: evaluate fit, draft CV + cover letter, review with 
 
 ## Other commands
 
-`/setup`, `/scrape`, and `/apply` form the core workflow. Seven more commands extend it once your profile is in place:
+`/setup`, `/scrape`, and `/apply` form the core workflow. Ten more commands extend it once your profile is in place:
+
+- **`/critique`** reviews a CV or cover letter **you wrote yourself** — against the job posting, your actual profile, the writing-style rules, and ATS realities — and returns numbered suggestions with rationale. Nothing is changed unless you accept a suggestion; decisions are recorded per round in the application's `reviews/` folder, and rejected suggestions stay rejected. The editor-not-author counterpart to `/apply`.
+- **`/typeset`** renders your own text draft (Markdown, plain text, or Word) as a professionally typeset PDF using the stock or any registered template — content verbatim, layout and ATS checks included, overflow cuts only with your sign-off. `--all` renders one draft in every registered style for comparison. See [The self-draft workflow](docs/self-draft-workflow.md).
+- **`/version`** is plain-language version control: "save my progress", "start a version for the Acme job", "bring back Tuesday's cover letter". Git underneath, fully agent-operated — no git knowledge needed. First use switches the instance to private mode (personal data becomes tracked; the repo must then stay private).
 
 - **`/interview`** preps you for a scheduled interview on a tracked application. It builds a stage-specific prep pack from the application's archive (the exact posting, the CV and cover letter the interviewer actually read, feedback recorded from earlier rounds), researches the company and interviewers with a verify-before-use rule, maps likely questions to your STAR examples, and offers a mock interview following the roleplay protocol in `07-interview-prep.md`. Gaps get honest bridge answers, never invented experience.
 - **`/outcome`** records what happened to an application - interview stages, offers, rejections, silence. It archives the submitted CV, cover letter, and posting text into `documents/applications/<company>_<role>/`, keeps `outcome.md` in the format `/setup` Path A parses, and updates the tracker. Once a few applications resolve, it points you back to `/setup` to calibrate the fit framework from what actually got interviews.
@@ -144,6 +148,9 @@ ai-job-search/
 │   │   ├── rank.md                    # /rank triage scraped jobs into a ranked shortlist
 │   │   ├── outcome.md                 # /outcome record application results, archive materials
 │   │   ├── interview.md               # /interview stage-specific prep pack + mock interview
+│   │   ├── critique.md                # /critique review your own draft (editor, not author)
+│   │   ├── typeset.md                 # /typeset render your text draft as a professional PDF
+│   │   ├── version.md                 # /version plain-language git (save/branch/restore per application)
 │   │   └── reset.md                   # /reset wipe profile data or documents folder
 │   ├── skills/
 │   │   ├── job-application-assistant/  # Core application skill
@@ -180,6 +187,8 @@ ai-job-search/
 │   ├── diplomas/                      # Degree certificates and transcripts
 │   ├── references/                    # Reference letters
 │   └── applications/                  # Past application records (<company>_<role>/)
+├── docs/
+│   └── self-draft-workflow.md         # Plain-English guide: you write, the AI edits/typesets/versions
 ├── .github/workflows/ci.yml           # CI: LaTeX smoke compiles, skill lint, CLI typechecks
 ├── salary_lookup.py                   # Salary benchmarking tool (BYO data)
 ├── tools/

@@ -66,3 +66,5 @@ The user may also ask for individual steps without the full workflow:
 - "Write a cover letter for [role] at [company]" - Step 3 only
 - "Help me prepare for an interview at [company]" - Step 4 only
 - "What jobs should I look for?" - Career strategy discussion using profile + evaluation framework
+
+**If the user wrote the draft themselves** (they provide their own CV/cover letter text and want feedback, formatting, or both), do not redraft it — route to the self-draft commands instead: `/critique` (review with accept/reject suggestions), `/typeset` (render their text as a PDF, content verbatim), or `/apply --self-draft` (full pipeline on their draft). Authorship stays with the user.

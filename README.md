@@ -43,78 +43,19 @@ The framework encodes career guidance best practices, including structured evalu
 
 ## Quick start
 
-### 1. Fork and clone
+### 1. Set up your profile
 
-```bash
-gh repo fork MadsLorentzen/ai-job-search --clone
-cd ai-job-search
+Open Claude Code in this repo and run:
+
 ```
-
-### 2. Install prerequisites and job search tools
-
-Pick your platform. Both cover the same four steps: install Bun, install a LaTeX distribution, install `pdftotext` (optional), then install the job-portal CLI dependencies. **[SETUP.md](SETUP.md) has the fully detailed version of this step**, including minimal-TeX-install package lists and smoke tests — this is the condensed version.
-
-<details open>
-<summary><strong>macOS</strong></summary>
-
-```bash
-# Bun
-curl -fsSL https://bun.sh/install | bash
-
-# LaTeX (MacTeX is the full distribution; see SETUP.md for a lighter TinyTeX route)
-brew install --cask mactex
-
-# pdftotext (optional, for the ATS check)
-brew install poppler
-
-# Job-portal CLI dependencies
-for tool in jobbank-search jobdanmark-search jobindex-search jobnet-search linkedin-search freehire-search; do
-  cd .agents/skills/$tool/cli && bun install && cd ../../../..
-done
-```
-
-</details>
-
-<details>
-<summary><strong>Windows</strong></summary>
-
-Run these in PowerShell:
-
-```powershell
-# Bun
-powershell -ExecutionPolicy Bypass -c "irm https://bun.sh/install.ps1 | iex"
-
-# LaTeX: download and run the installer from https://miktex.org/download
-
-# pdftotext (optional, for the ATS check)
-choco install poppler
-
-# Job-portal CLI dependencies
-$tools = @("jobbank-search", "jobdanmark-search", "jobindex-search", "jobnet-search", "linkedin-search", "freehire-search")
-foreach ($tool in $tools) {
-  Set-Location ".agents/skills/$tool/cli"
-  bun install
-  Set-Location "..\..\..\.."
-}
-```
-
-If `bun` isn't recognized right after installing, close and reopen your terminal — the installer updates your permanent PATH, but already-open shells (and any shell spawned from an already-running parent process) keep their old copy until restarted.
-
-</details>
-
-For `linkedin-search` and `freehire-search` the install is optional either way: both have zero runtime dependencies and run with plain `bun`; `bun install` only pulls TypeScript dev types.
-
-### 3. Set up your profile
-
-```bash
-claude
-# Then inside Claude Code:
 /setup
 ```
 
-`/setup` offers three paths: read your `documents/` folder if you have one populated (CV PDF, LinkedIn export, diplomas, reference letters, past applications), import a single CV pasted in chat, or walk through an interview. It auto-detects what you have and asks. Documents-folder mode is idempotent and safe to re-run as you add more material; see [documents/README.md](documents/README.md) for exactly what goes where.
+`/setup` guides you through everything: it reads your `documents/` folder if you have one (CV PDF, LinkedIn export, diplomas, references, past applications), lets you paste in a CV directly, or walks through a profile interview. It auto-detects what's available and asks. Run it again any time you add more material.
 
-### 4. Search for jobs
+For prerequisites (Bun, LaTeX, pdftotext) and a full platform-by-platform walkthrough, see **[SETUP.md](SETUP.md)**.
+
+### 2. Search for jobs
 
 ```bash
 /scrape
@@ -122,7 +63,7 @@ claude
 
 This searches multiple job portals for positions matching your profile, deduplicates results, and presents them sorted by fit. Pick a match to run `/apply` on it directly — or, when a scrape returns more jobs than you want to eyeball, run `/rank` to batch-score them all against the fit framework and get a ranked shortlist first.
 
-### 5. Apply to a job
+### 3. Apply to a job
 
 ```bash
 /apply https://jobindex.dk/job/1234567
